@@ -79,17 +79,15 @@ class ServeurChat {
 			try {
 				while ((lu = lect.readLine()) != null) {
 					switch(lu.charAt(0)) {
-						case '?' : 
+						case '/' : 
 							// Vérifier que le pseudo est unique
 							String pseudo = lu.substring(2);
 							if (clientsList.size()>=1) {
 								for(int i = 0; i < clientsList.size(); i++) {
-									// Si le pseudo est déjà utilisé, on ajoute le suffixe "2" au pseudo
-									if (pseudo.equals(clientsList.get(i))==true) {
+									if (pseudo.equals(clientsList.get(i))==true) { // Si le pseudo est déjà utilisé, on ajoute le suffixe "2" au pseudo
 										String newPseudo = clientsList.get(i)+"2";
 										pseudo = newPseudo;
-										// On ajoute le pseudo une fois qu'on a fini de parcourir le tableau
-										if ((i+1)==clientsList.size()) {
+										if ((i+1)==clientsList.size()) { // On ajoute le pseudo une fois qu'on a fini de parcourir le tableau
 											clientsList.add(pseudo);
 											clientLogin = pseudo;
 											break;
@@ -106,15 +104,23 @@ class ServeurChat {
 								clientLogin = pseudo;
 							}
 							System.out.println(clientsList);
-							send("> Bienvenue " + clientLogin + " !");
+							send("> Bienvenue " + clientLogin + " !"); // Un message de bienvenue est envoyé à tout utilisateur qui se connecte
+							broadcast("> " + clientLogin + " s'est connecté"); // Tous les utilisateurs sont avertis de toute arrivée d'un nouvel utilisateur
 							break;
 						case '.' : 
-							send("> Au revoir " + clientLogin + " !");
-							clientsList.remove(clientLogin);
+							send("> Au revoir " + clientLogin + " !"); // Un message d'au revoir est envoyé à tout utilisateur qui se déconnecte
+							broadcast("> " + clientLogin + " s'est déconnecté"); // Tous les utilisateurs sont avertis de tout départ d'un utilisateur
+							clientsList.remove(clientLogin); // On retire l'utilisateur de la liste utilisateurs
 							break;
-						case '!' : broadcast("A tous> " + lu.substring(2));break;
+						case '!' : 
+							broadcast(clientLogin + " > " + lu.substring(2)); // Le message est envoyé à tous les utilisateurs connectés
+							break;
+						//case '?' :
 						//case '@' : 
-						//case '%' : 
+						case '%' : 
+							// Afficher les pseudonymes de tous les utilisateurs connectés
+							String utilisateurs = String.join(", ", clientsList);
+							String res = "Utilisateurs connectés : " + utilisateurs;
 						default : send(clientLogin + " > " + lu);
 					}
 				}

@@ -127,9 +127,9 @@ public class ClientChat extends Applet {
 		/* Annonce au serveur de la connexion d'un nouvel utilisateur */
 		String pseudo = text.getText();
 		if (pseudo.length() == 0) { //si un utilisateur se connecte sans pseudonyme, il se voit attribuer le pseudonyme "anonyme" par défaut
-			ecriv.println("? Anonyme");
+			ecriv.println("/ Anonyme");
 		} else {
-			ecriv.println("? "+pseudo);
+			ecriv.println("/ "+pseudo);
 		}
 		connecte = true;
 
