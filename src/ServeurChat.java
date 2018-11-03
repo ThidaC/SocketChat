@@ -61,7 +61,7 @@ class ServeurChat {
 		PrintWriter ecriv;			/* Ecrivain de donn�es sur la socket */
 		String clientIP;			/* Machine du client */
 		String clientLogin;			/* Nom de conversation du client */
-		String couleurLogin;
+		String couleurLogin;		// couleur d'affichage du client
 
 		GestionChat(Socket sk, String nm) {	/* Constructeur */
 			sockC = sk;
@@ -91,6 +91,7 @@ class ServeurChat {
 										if ((i+1)==clientsList.size()) { // On ajoute le pseudo une fois qu'on a fini de parcourir le tableau
 											clientsList.add(pseudo);
 											clientLogin = pseudo;
+											couleurLogin = ""; // random color
 											break;
 										}
 									} 
@@ -116,7 +117,35 @@ class ServeurChat {
 						case '!' : 
 							broadcast(clientLogin + " > " + lu.substring(2)); // Le message est envoy� � tous les utilisateurs connect�s
 							break;
-						//case '?' :
+						case '?' : // Change the current pseudo
+							// Unique pseudo verification
+							String modifPseudo = lu.substring(2);
+							if (clientsList.size()>=1) {
+								for(int i = 0; i < clientsList.size(); i++) {
+									if (modifPseudo.equals(clientsList.get(i))==true) { // Si le pseudo est d�j� utilis�, on ajoute le suffixe "2" au pseudo
+										String newPseudo = clientsList.get(i)+"2";
+										modifPseudo = newPseudo;
+										if ((i+1)==clientsList.size()) { // On ajoute le pseudo une fois qu'on a fini de parcourir le tableau
+											clientsList.remove(clientLogin); // old pseudo deleted from list
+											clientsList.add(modifPseudo);
+											clientLogin = modifPseudo;
+											break;
+										}
+									} 
+									else {
+										clientsList.remove(clientLogin); // old pseudo deleted from list
+										clientsList.add(modifPseudo);
+										clientLogin = modifPseudo;
+										break;
+									}
+								}
+							} else {
+								clientsList.remove(clientLogin); // old pseudo deleted from list
+								clientsList.add(modifPseudo);
+								clientLogin = modifPseudo;
+							}
+							send("> Nouveau pseudo : " + clientLogin + " mis à jour.");
+							break;
 						//case '@' : 
 						case '%' : 
 							// Afficher les pseudonymes de tous les utilisateurs connect�s
