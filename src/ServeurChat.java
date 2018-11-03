@@ -7,17 +7,17 @@ class ServeurChat {
 	int port = 7777;				/* Port de communication */
 
 	final static String Id = "ChatMC ";		/* Nom de conversation du serveur */
-	ArrayList clients;				/* Liste des clients connectés */
+	ArrayList clients;				/* Liste des clients connectï¿½s */
 	ArrayList<String> clientsList = new ArrayList(); // Liste des utilisateurs
 
 	/* LANCEMENT DU SERVEUR DE DISCUSSION */
 	public static void main(String[] arg) {
-		/* Serveur en démarrage */
+		/* Serveur en dï¿½marrage */
 		System.out.println("Serveur Chat en lancement...");
 		ServeurChat w = new ServeurChat();
 		w.tourner();
 
-		/* Arrêt du serveur */
+		/* Arrï¿½t du serveur */
 		System.out.println("Serveur Chat indisponible !");
 	}
 
@@ -57,10 +57,11 @@ class ServeurChat {
 	/* CLASSE INTERNE POUR LA GESTION DE LA CONVERSATION */
 	class GestionChat extends Thread {
 		Socket sockC;				/* Socket du client */
-		BufferedReader lect;		/* Lecteur de données sur la socket */
-		PrintWriter ecriv;			/* Ecrivain de données sur la socket */
+		BufferedReader lect;		/* Lecteur de donnï¿½es sur la socket */
+		PrintWriter ecriv;			/* Ecrivain de donnï¿½es sur la socket */
 		String clientIP;			/* Machine du client */
 		String clientLogin;			/* Nom de conversation du client */
+		String couleurLogin;
 
 		GestionChat(Socket sk, String nm) {	/* Constructeur */
 			sockC = sk;
@@ -80,11 +81,11 @@ class ServeurChat {
 				while ((lu = lect.readLine()) != null) {
 					switch(lu.charAt(0)) {
 						case '/' : 
-							// Vérifier que le pseudo est unique
+							// Vï¿½rifier que le pseudo est unique
 							String pseudo = lu.substring(2);
 							if (clientsList.size()>=1) {
 								for(int i = 0; i < clientsList.size(); i++) {
-									if (pseudo.equals(clientsList.get(i))==true) { // Si le pseudo est déjà utilisé, on ajoute le suffixe "2" au pseudo
+									if (pseudo.equals(clientsList.get(i))==true) { // Si le pseudo est dï¿½jï¿½ utilisï¿½, on ajoute le suffixe "2" au pseudo
 										String newPseudo = clientsList.get(i)+"2";
 										pseudo = newPseudo;
 										if ((i+1)==clientsList.size()) { // On ajoute le pseudo une fois qu'on a fini de parcourir le tableau
@@ -104,23 +105,23 @@ class ServeurChat {
 								clientLogin = pseudo;
 							}
 							System.out.println(clientsList);
-							send("> Bienvenue " + clientLogin + " !"); // Un message de bienvenue est envoyé à tout utilisateur qui se connecte
-							broadcast("> " + clientLogin + " s'est connecté"); // Tous les utilisateurs sont avertis de toute arrivée d'un nouvel utilisateur
+							send("> Bienvenue " + clientLogin + " !"); // Un message de bienvenue est envoyï¿½ ï¿½ tout utilisateur qui se connecte
+							broadcast("> " + clientLogin + " s'est connectï¿½"); // Tous les utilisateurs sont avertis de toute arrivï¿½e d'un nouvel utilisateur
 							break;
 						case '.' : 
-							send("> Au revoir " + clientLogin + " !"); // Un message d'au revoir est envoyé à tout utilisateur qui se déconnecte
-							broadcast("> " + clientLogin + " s'est déconnecté"); // Tous les utilisateurs sont avertis de tout départ d'un utilisateur
+							send("> Au revoir " + clientLogin + " !"); // Un message d'au revoir est envoyï¿½ ï¿½ tout utilisateur qui se dï¿½connecte
+							broadcast("> " + clientLogin + " s'est dï¿½connectï¿½"); // Tous les utilisateurs sont avertis de tout dï¿½part d'un utilisateur
 							clientsList.remove(clientLogin); // On retire l'utilisateur de la liste utilisateurs
 							break;
 						case '!' : 
-							broadcast(clientLogin + " > " + lu.substring(2)); // Le message est envoyé à tous les utilisateurs connectés
+							broadcast(clientLogin + " > " + lu.substring(2)); // Le message est envoyï¿½ ï¿½ tous les utilisateurs connectï¿½s
 							break;
 						//case '?' :
 						//case '@' : 
 						case '%' : 
-							// Afficher les pseudonymes de tous les utilisateurs connectés
+							// Afficher les pseudonymes de tous les utilisateurs connectï¿½s
 							String utilisateurs = String.join(", ", clientsList);
-							String res = "Utilisateurs connectés : " + utilisateurs;
+							String res = "Utilisateurs connectï¿½s : " + utilisateurs;
 						default : send(clientLogin + " > " + lu);
 					}
 				}
@@ -133,7 +134,7 @@ class ServeurChat {
 			ecriv.println(mess);
 		}
 
-		public void broadcast(String mess) {	/* Envoyer un message à tous les clients */
+		public void broadcast(String mess) {	/* Envoyer un message ï¿½ tous les clients */
 			synchronized(clients) {
 				for (int i = 0; i < clients.size(); i++) {
 					GestionChat gct = (GestionChat) clients.get(i);
