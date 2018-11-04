@@ -146,7 +146,17 @@ class ServeurChat {
 							}
 							send("> Nouveau pseudo : " + clientLogin + " mis à jour.");
 							break;
-						//case '@' : 
+						case '@' : // private message
+							String split[] = lu.split(" ");
+							String destinataire = split[1];
+							String message = "";
+							int i;
+							for(i = 2; i < split.length; i++) {
+								message += " " + split[i];
+							}
+							message = message.substring(1); // we delete the first useless space
+							directMessage(message, destinataire);
+							break;
 						case '%' : 
 							// Afficher les pseudonymes de tous les utilisateurs connect�s
 							String utilisateurs = String.join(", ", clientsList);
@@ -168,6 +178,30 @@ class ServeurChat {
 				for (int i = 0; i < clients.size(); i++) {
 					GestionChat gct = (GestionChat) clients.get(i);
 					if (gct != null) gct.send(mess);
+				}
+			}
+		}
+		
+		/** 
+		 * Private message
+		 * @param mess contenu du message
+		 * @param toClient destinataire privé  
+		 */
+		public void directMessage(String mess, String toClient) {
+			int count = 0;
+			synchronized(clients) {
+				for (int i = 0; i < clients.size(); i++) {
+					GestionChat gct = (GestionChat) clients.get(i);
+					if (gct != null && gct.clientLogin.equals(toClient)) {
+						count++;
+						gct.send("> De " +this.clientLogin+ " : " + mess);
+						break; // username is unique so we dont need to continue
+					}
+				}
+				if (count == 1) {
+					send("> Votre message a bien été envoyé.");
+				} else {
+					send("> Le destinataire n'existe pas ou n'est pas connecté.");
 				}
 			}
 		}
