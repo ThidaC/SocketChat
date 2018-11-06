@@ -165,7 +165,7 @@ public class ClientChat extends Applet {
 	/* ECRITURE DES MESSAGES A L'ECRAN */
 	public void paint(Graphics g) {
 		g.fillRect(0,0,getSize().width,getSize().height);
-		g.setColor(Color.black);
+		g.setColor(Color.white);
 		g.drawString(message, debMess, getSize().height/2);
 	}
 

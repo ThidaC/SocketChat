@@ -120,7 +120,8 @@ class ServeurChat {
 						case '%' : 
 							// Afficher les pseudonymes de tous les utilisateurs connectés
 							String utilisateurs = String.join(", ", clientsList);
-							String res = "Utilisateurs connectés : " + utilisateurs;
+							String res = "> Utilisateurs connectés : " + utilisateurs;
+							send(res);
 						default : send(clientLogin + " > " + lu);
 					}
 				}
