@@ -158,14 +158,10 @@ class ServeurChat {
 							directMessage(message, destinataire);
 							break;
 						case '%' : 
-							// Afficher les pseudonymes de tous les utilisateurs connectÃ©s
+							// Afficher les pseudonymes de tous les utilisateurs connectés
 							String utilisateurs = String.join(", ", clientsList);
-<<<<<<< HEAD
 							String res = "> Utilisateurs connectés : " + utilisateurs;
 							send(res);
-=======
-							String res = "Utilisateurs connectÃ©s : " + utilisateurs;
->>>>>>> 0609ba901517e874bf860b3df1a7ac79ecaa609e
 						default : send(clientLogin + " > " + lu);
 					}
 				}
