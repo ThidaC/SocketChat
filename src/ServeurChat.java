@@ -7,17 +7,17 @@ class ServeurChat {
 	int port = 7777;				/* Port de communication */
 
 	final static String Id = "ChatMC ";		/* Nom de conversation du serveur */
-	ArrayList clients;				/* Liste des clients connectÈs */
+	ArrayList clients;				/* Liste des clients connect√©s */
 	ArrayList<String> clientsList = new ArrayList(); // Liste des utilisateurs
 
 	/* LANCEMENT DU SERVEUR DE DISCUSSION */
 	public static void main(String[] arg) {
-		/* Serveur en dÈmarrage */
+		/* Serveur en d√©marrage */
 		System.out.println("Serveur Chat en lancement...");
 		ServeurChat w = new ServeurChat();
 		w.tourner();
 
-		/* ArrÍt du serveur */
+		/* Arr√™t du serveur */
 		System.out.println("Serveur Chat indisponible !");
 	}
 
@@ -57,10 +57,11 @@ class ServeurChat {
 	/* CLASSE INTERNE POUR LA GESTION DE LA CONVERSATION */
 	class GestionChat extends Thread {
 		Socket sockC;				/* Socket du client */
-		BufferedReader lect;		/* Lecteur de donnÈes sur la socket */
-		PrintWriter ecriv;			/* Ecrivain de donnÈes sur la socket */
+		BufferedReader lect;		/* Lecteur de donn√©es sur la socket */
+		PrintWriter ecriv;			/* Ecrivain de donn√©es sur la socket */
 		String clientIP;			/* Machine du client */
 		String clientLogin;			/* Nom de conversation du client */
+		String couleurLogin;		// couleur d'affichage du client
 
 		GestionChat(Socket sk, String nm) {	/* Constructeur */
 			sockC = sk;
@@ -80,16 +81,17 @@ class ServeurChat {
 				while ((lu = lect.readLine()) != null) {
 					switch(lu.charAt(0)) {
 						case '/' : 
-							// VÈrifier que le pseudo est unique
+							// V√©rifier que le pseudo est unique
 							String pseudo = lu.substring(2);
 							if (clientsList.size()>=1) {
 								for(int i = 0; i < clientsList.size(); i++) {
-									if (pseudo.equals(clientsList.get(i))==true) { // Si le pseudo est dÈj‡ utilisÈ, on ajoute le suffixe "2" au pseudo
+									if (pseudo.equals(clientsList.get(i))==true) { // Si le pseudo est d√©j√† utilis√©, on ajoute le suffixe "2" au pseudo
 										String newPseudo = clientsList.get(i)+"2";
 										pseudo = newPseudo;
 										if ((i+1)==clientsList.size()) { // On ajoute le pseudo une fois qu'on a fini de parcourir le tableau
 											clientsList.add(pseudo);
 											clientLogin = pseudo;
+											couleurLogin = ""; // random color
 											break;
 										}
 									} 
@@ -104,24 +106,66 @@ class ServeurChat {
 								clientLogin = pseudo;
 							}
 							System.out.println(clientsList);
-							send("> Bienvenue " + clientLogin + " !"); // Un message de bienvenue est envoyÈ ‡ tout utilisateur qui se connecte
-							broadcast("> " + clientLogin + " s'est connectÈ"); // Tous les utilisateurs sont avertis de toute arrivÈe d'un nouvel utilisateur
+							send("> Bienvenue " + clientLogin + " !"); // Un message de bienvenue est envoy√© √† tout utilisateur qui se connecte
+							broadcast("> " + clientLogin + " s'est connect√©"); // Tous les utilisateurs sont avertis de toute arriv√©e d'un nouvel utilisateur
 							break;
 						case '.' : 
-							send("> Au revoir " + clientLogin + " !"); // Un message d'au revoir est envoyÈ ‡ tout utilisateur qui se dÈconnecte
-							broadcast("> " + clientLogin + " s'est dÈconnectÈ"); // Tous les utilisateurs sont avertis de tout dÈpart d'un utilisateur
+							send("> Au revoir " + clientLogin + " !"); // Un message d'au revoir est envoy√© √† tout utilisateur qui se d√©connecte
+							broadcast("> " + clientLogin + " s'est d√©connect√©"); // Tous les utilisateurs sont avertis de tout d√©part d'un utilisateur
 							clientsList.remove(clientLogin); // On retire l'utilisateur de la liste utilisateurs
 							break;
 						case '!' : 
-							broadcast(clientLogin + " > " + lu.substring(2)); // Le message est envoyÈ ‡ tous les utilisateurs connectÈs
+							broadcast(clientLogin + " > " + lu.substring(2)); // Le message est envoy√© √† tous les utilisateurs connect√©s
 							break;
-						//case '?' :
-						//case '@' : 
+						case '?' : // Change the current pseudo
+							// Unique pseudo verification
+							String modifPseudo = lu.substring(2);
+							if (clientsList.size()>=1) {
+								for(int i = 0; i < clientsList.size(); i++) {
+									if (modifPseudo.equals(clientsList.get(i))==true) { // Si le pseudo est d√©j√† utilis√©, on ajoute le suffixe "2" au pseudo
+										String newPseudo = clientsList.get(i)+"2";
+										modifPseudo = newPseudo;
+										if ((i+1)==clientsList.size()) { // On ajoute le pseudo une fois qu'on a fini de parcourir le tableau
+											clientsList.remove(clientLogin); // old pseudo deleted from list
+											clientsList.add(modifPseudo);
+											clientLogin = modifPseudo;
+											break;
+										}
+									} 
+									else {
+										clientsList.remove(clientLogin); // old pseudo deleted from list
+										clientsList.add(modifPseudo);
+										clientLogin = modifPseudo;
+										break;
+									}
+								}
+							} else {
+								clientsList.remove(clientLogin); // old pseudo deleted from list
+								clientsList.add(modifPseudo);
+								clientLogin = modifPseudo;
+							}
+							send("> Nouveau pseudo : " + clientLogin + " mis √† jour.");
+							break;
+						case '@' : // private message
+							String split[] = lu.split(" ");
+							String destinataire = split[1];
+							String message = "";
+							int i;
+							for(i = 2; i < split.length; i++) {
+								message += " " + split[i];
+							}
+							message = message.substring(1); // we delete the first useless space
+							directMessage(message, destinataire);
+							break;
 						case '%' : 
-							// Afficher les pseudonymes de tous les utilisateurs connectÈs
+							// Afficher les pseudonymes de tous les utilisateurs connect√©s
 							String utilisateurs = String.join(", ", clientsList);
+<<<<<<< HEAD
 							String res = "> Utilisateurs connectÈs : " + utilisateurs;
 							send(res);
+=======
+							String res = "Utilisateurs connect√©s : " + utilisateurs;
+>>>>>>> 0609ba901517e874bf860b3df1a7ac79ecaa609e
 						default : send(clientLogin + " > " + lu);
 					}
 				}
@@ -134,11 +178,35 @@ class ServeurChat {
 			ecriv.println(mess);
 		}
 
-		public void broadcast(String mess) {	/* Envoyer un message ‡ tous les clients */
+		public void broadcast(String mess) {	/* Envoyer un message √† tous les clients */
 			synchronized(clients) {
 				for (int i = 0; i < clients.size(); i++) {
 					GestionChat gct = (GestionChat) clients.get(i);
 					if (gct != null) gct.send(mess);
+				}
+			}
+		}
+		
+		/** 
+		 * Private message
+		 * @param mess contenu du message
+		 * @param toClient destinataire priv√©  
+		 */
+		public void directMessage(String mess, String toClient) {
+			int count = 0;
+			synchronized(clients) {
+				for (int i = 0; i < clients.size(); i++) {
+					GestionChat gct = (GestionChat) clients.get(i);
+					if (gct != null && gct.clientLogin.equals(toClient)) {
+						count++;
+						gct.send("> De " +this.clientLogin+ " : " + mess);
+						break; // username is unique so we dont need to continue
+					}
+				}
+				if (count == 1) {
+					send("> Votre message a bien √©t√© envoy√©.");
+				} else {
+					send("> Le destinataire n'existe pas ou n'est pas connect√©.");
 				}
 			}
 		}

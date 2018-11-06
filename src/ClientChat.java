@@ -9,11 +9,11 @@ public class ClientChat extends Applet {
 	static int port = 7777;				/* Port de communication */
 	boolean connecte;				/* Etat du client */
 
-	BufferedReader lect;				/* Lecteur de données sur la socket */
-	PrintWriter ecriv;				/* Ecrivain de données sur la socket */
+	BufferedReader lect;				/* Lecteur de donnÃ©es sur la socket */
+	PrintWriter ecriv;				/* Ecrivain de donnÃ©es sur la socket */
 
-	String message;					/* Message écran */
-	int debMess = 10;				/* Colonne de début d'écriture du message écran */
+	String message;					/* Message Ã©cran */
+	int debMess = 10;				/* Colonne de dÃ©but d'Ã©criture du message Ã©cran */
 
 	Frame cad;					/* Cadre de discussion */
 	final static String titre = "CHAT BOX";		/* Titre dans la barre de titre du salon */
@@ -21,8 +21,8 @@ public class ClientChat extends Applet {
 	TextField text;					/* Zone de saisie de texte */
 	int dim = 40;					/* Taille de la zone de saisie */
 	TextArea conv;					/* Zone d'affichage des conversations */
-	final static String pol = "Monospaced";		/* Police de caractère de conversation */
-	int tail = 11;					/* Taille des caractères de conversation */
+	final static String pol = "Monospaced";		/* Police de caractÃ¨re de conversation */
+	int tail = 11;					/* Taille des caractÃ¨res de conversation */
 
 	Button lib;					/* Bouton d'ouverture de session */
 	Button lob;					/* Bouton de fermeture de session */
@@ -32,7 +32,7 @@ public class ClientChat extends Applet {
 
 	/* DEFINITION DU CADRE DU FORUM */
 	public void init() {
-		// Bienvenue à l'utilisateur
+		// Bienvenue Ã  l'utilisateur
 		message = "Veuillez patienter pendant la mise en place du cadre de discussion...";
 		repaint();
 
@@ -90,7 +90,7 @@ public class ClientChat extends Applet {
 		// Fermeture propre du cadre de discussion
 		cad.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				// la fermeture est effective après setVisible et dispose
+				// la fermeture est effective aprÃ¨s setVisible et dispose
 				ClientChat.this.cad.setVisible(false);
 				ClientChat.this.cad.dispose();
 				logout();
@@ -98,7 +98,7 @@ public class ClientChat extends Applet {
 		});
 		cad.pack();
 
-		// Centrage du cadre de discussion dans l'écran
+		// Centrage du cadre de discussion dans l'Ã©cran
 		Dimension tailEcr = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension tailCad = cad.getSize();
 		int X = (tailEcr.width - tailCad.width)/2;
@@ -117,7 +117,7 @@ public class ClientChat extends Applet {
 			sock = new Socket("localhost", port);
 			showStatus("CONNEXION ETABLIE !!!");
 
-			/* Création des flux d'entrée et de sortie */
+			/* CrÃ©ation des flux d'entrÃ©e et de sortie */
 			lect = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 			ecriv = new PrintWriter(sock.getOutputStream(), true);
 		} catch(IOException e) {
@@ -126,15 +126,15 @@ public class ClientChat extends Applet {
 
 		/* Annonce au serveur de la connexion d'un nouvel utilisateur */
 		String pseudo = text.getText();
-		if (pseudo.length() == 0) { //si un utilisateur se connecte sans pseudonyme, il se voit attribuer le pseudonyme "anonyme" par défaut
+		if (pseudo.length() == 0) { //si un utilisateur se connecte sans pseudonyme, il se voit attribuer le pseudonyme "anonyme" par dÃ©faut
 			ecriv.println("/ Anonyme");
 		} else {
 			ecriv.println("/ "+pseudo);
 		}
 		connecte = true;
 
-		/* Construction et démarrage du lecteur */
-		/* (sous forme de Thread, pour éviter l'inter blocage avec l'écriture)	*/
+		/* Construction et dÃ©marrage du lecteur */
+		/* (sous forme de Thread, pour Ã©viter l'inter blocage avec l'Ã©criture)	*/
 		new Thread(new Runnable() {
 			public void run() {
 				String lu;
