@@ -106,13 +106,24 @@ class ServeurChat {
 								clientLogin = pseudo;
 							}
 							System.out.println(clientsList);
-							send("> Bienvenue " + clientLogin + " !"); // Un message de bienvenue est envoyé à tout utilisateur qui se connecte
-							broadcast("> " + clientLogin + " s'est connecté"); // Tous les utilisateurs sont avertis de toute arrivée d'un nouvel utilisateur
+							send("> Bienvenue " + clientLogin + " !"); // Un message de bienvenue est envoyé à tout utilisateur qui se connecte		
+							
+							//Tous les utilisateurs sont avertis de toute arrivée d'un nouvel utilisateur
+							if (clientsList.size()>1) {
+								broadcast("> " + clientLogin + " s'est connecté, " + clientsList.size() + " utilisateurs connectés"); 
+							} else {
+								broadcast("> " + clientLogin + " s'est connecté, " + clientsList.size() + " utilisateur connecté"); 
+							}
 							break;
 						case '.' : 
 							send("> Au revoir " + clientLogin + " !"); // Un message d'au revoir est envoyé à tout utilisateur qui se déconnecte
-							broadcast("> " + clientLogin + " s'est déconnecté"); // Tous les utilisateurs sont avertis de tout départ d'un utilisateur
 							clientsList.remove(clientLogin); // On retire l'utilisateur de la liste utilisateurs
+							// Tous les utilisateurs sont avertis de tout départ d'un utilisateur
+							if (clientsList.size()>1) {
+								broadcast("> " + clientLogin + " s'est déconnecté, " + clientsList.size() + " utilisateurs connectés"); 
+							} else {
+								broadcast("> " + clientLogin + " s'est déconnecté, " + clientsList.size() + " utilisateur connecté"); 
+							}
 							break;
 						case '!' : 
 							if(lu.length()>1) {
