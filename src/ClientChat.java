@@ -9,11 +9,11 @@ public class ClientChat extends Applet {
 	static int port = 7777;				/* Port de communication */
 	boolean connecte;				/* Etat du client */
 
-	BufferedReader lect;				/* Lecteur de donnÃ©es sur la socket */
-	PrintWriter ecriv;				/* Ecrivain de donnÃ©es sur la socket */
+	BufferedReader lect;				/* Lecteur de données sur la socket */
+	PrintWriter ecriv;				/* Ecrivain de données sur la socket */
 
-	String message;					/* Message Ã©cran */
-	int debMess = 10;				/* Colonne de dÃ©but d'Ã©criture du message Ã©cran */
+	String message;					/* Message écran */
+	int debMess = 10;				/* Colonne de début d'écriture du message écran */
 
 	Frame cad;					/* Cadre de discussion */
 	final static String titre = "CHAT BOX";		/* Titre dans la barre de titre du salon */
@@ -32,7 +32,7 @@ public class ClientChat extends Applet {
 
 	/* DEFINITION DU CADRE DU FORUM */
 	public void init() {
-		// Bienvenue Ã  l'utilisateur
+		// Bienvenue à l'utilisateur
 		message = "Veuillez patienter pendant la mise en place du cadre de discussion...";
 		repaint();
 
@@ -98,7 +98,7 @@ public class ClientChat extends Applet {
 		});
 		cad.pack();
 
-		// Centrage du cadre de discussion dans l'Ã©cran
+		// Centrage du cadre de discussion dans l'écran
 		Dimension tailEcr = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension tailCad = cad.getSize();
 		int X = (tailEcr.width - tailCad.width)/2;
@@ -117,7 +117,7 @@ public class ClientChat extends Applet {
 			sock = new Socket("localhost", port);
 			showStatus("CONNEXION ETABLIE !!!");
 
-			/* CrÃ©ation des flux d'entrÃ©e et de sortie */
+			/* Création des flux d'entrée et de sortie */
 			lect = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 			ecriv = new PrintWriter(sock.getOutputStream(), true);
 		} catch(IOException e) {
@@ -126,15 +126,15 @@ public class ClientChat extends Applet {
 
 		/* Annonce au serveur de la connexion d'un nouvel utilisateur */
 		String pseudo = text.getText();
-		if (pseudo.length() == 0) { //si un utilisateur se connecte sans pseudonyme, il se voit attribuer le pseudonyme "anonyme" par dÃ©faut
+		if (pseudo.length() == 0) { //si un utilisateur se connecte sans pseudonyme, il se voit attribuer le pseudonyme "anonyme" par défaut
 			ecriv.println("/ Anonyme");
 		} else {
 			ecriv.println("/ "+pseudo);
 		}
 		connecte = true;
 
-		/* Construction et dÃ©marrage du lecteur */
-		/* (sous forme de Thread, pour Ã©viter l'inter blocage avec l'Ã©criture)	*/
+		/* Construction et démarrage du lecteur */
+		/* (sous forme de Thread, pour éviter l'inter blocage avec l'écriture)	*/
 		new Thread(new Runnable() {
 			public void run() {
 				String lu;
